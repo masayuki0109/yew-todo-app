@@ -32,12 +32,14 @@ pub fn todos(
     };
 
     html! {
-        <li>
-            <input type="checkbox" checked={todo.done} oninput={oninput} />
-            {
-                format!("{}: {}", todo.id, todo.title)
-            }
-            <button {onclick}>{"削除"}</button>
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div>
+                <input class="form-check-input me-2" type="checkbox" checked={todo.done} oninput={oninput} />
+                {
+                    format!(" {}", todo.title)
+                }
+            </div>
+            <button {onclick} class="btn btn-dark">{"削除"}</button>
         </li>
     }
 }

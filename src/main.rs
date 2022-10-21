@@ -2,7 +2,7 @@ mod components;
 mod http_client;
 mod types;
 
-use crate::components::{detail::TodoDetail, form::InputFrom, list::TodosList};
+use crate::components::{detail::TodoDetail, form::InputFrom, list::List, header::Header};
 use crate::http_client::{delete, get, post, put};
 use gloo_net::http::Request;
 use types::{NewTodo, Todo, TodoDoneRequest};
@@ -79,14 +79,16 @@ fn app() -> Html {
 
     html! {
         <>
-            <h1>{"Todo App"}</h1>
+            <Header />
+            <main class="container-fluid mt-2 container">
             <form>
             <InputFrom {on_add} />
             </form>
             <div>
                 <h3>{"todos list"}</h3>
-                <TodosList todos={(*todos).clone()} on_click={on_click.clone()} on_change_value={on_change_value.clone()} />
+                <List todos={(*todos).clone()} on_click={on_click.clone()} on_change_value={on_change_value.clone()} />
            </div>
+           </main>
         </>
     }
 }

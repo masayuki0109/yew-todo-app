@@ -20,3 +20,13 @@ pub fn todos_list(TodosListProps { todos, on_click, on_change_value }: &TodosLis
         })
         .collect()
 }
+#[function_component(List)]
+pub fn list(TodosListProps { todos, on_click, on_change_value }: &TodosListProps) -> Html {
+    html! {
+        <ul class="list-group">
+            <TodosList todos={(*todos).clone()} {on_click} {on_change_value} />
+        </ul>
+    }
+}
+
+
