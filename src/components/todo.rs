@@ -1,6 +1,5 @@
 use crate::types;
-use wasm_bindgen::JsValue;
-use web_sys::{console::log_1, HtmlInputElement, InputEvent};
+use web_sys::{ HtmlInputElement, InputEvent};
 use yew::{function_component, html, Callback, TargetCast};
 
 use crate::types::TodoProps;

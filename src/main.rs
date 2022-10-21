@@ -2,12 +2,9 @@ mod components;
 mod http_client;
 mod types;
 
-use crate::components::{detail::TodoDetail, form::InputFrom, list::List, header::Header};
+use crate::components::{form::InputFrom, list::List, header::Header};
 use crate::http_client::{delete, get, post, put};
-use gloo_net::http::Request;
 use types::{NewTodo, Todo, TodoDoneRequest};
-use wasm_bindgen::JsValue;
-use web_sys::console::log_1;
 use yew::prelude::*;
 
 #[function_component(App)]
