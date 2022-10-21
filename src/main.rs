@@ -3,7 +3,7 @@ mod http_client;
 mod types;
 
 use crate::components::{detail::TodoDetail, form::InputFrom, list::TodosList};
-use crate::http_client::{get, post};
+use crate::http_client::{delete, get, post};
 use gloo_net::http::Request;
 use types::{NewTodo, Todo};
 use wasm_bindgen::JsValue;
@@ -29,15 +29,17 @@ fn app() -> Html {
     }
 
     let on_click = {
+        let todos = todos.clone();
         Callback::from(move |todo: Todo| {
+            let todos = todos.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                Request::delete(&format!("/todos/{}", todo.id))
-                    .send()
-                    .await
-                    .unwrap()
-                    .text()
-                    .await
-                    .unwrap();
+                delete::todo(todo.id).await;
+
+                let new_todos = (*todos).clone()
+                    .into_iter()
+                    .filter(|t| t.id != todo.id)
+                    .collect::<Vec<Todo>>();
+                todos.set(new_todos);
             })
         })
     };
