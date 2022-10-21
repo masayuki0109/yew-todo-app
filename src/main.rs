@@ -1,56 +1,10 @@
+mod components;
+mod types;
+
+use crate::components::{detail::PostDetail, list::PostsList};
 use gloo_net::http::Request;
-use serde::Deserialize;
+use types::{Post};
 use yew::prelude::*;
-
-#[derive(Deserialize, Clone, PartialEq)]
-pub struct Post {
-    id: i32,
-    title: String,
-    body: String,
-    published: bool,
-}
-
-#[derive(Properties, PartialEq)]
-struct PostsListProps {
-    posts: Vec<Post>,
-    on_click: Callback<Post>,
-}
-
-#[function_component(PostsList)]
-fn posts_list(PostsListProps { posts, on_click }: &PostsListProps) -> Html {
-    posts
-        .iter()
-        .map(|post| {
-            let on_post_select = {
-                let on_click = on_click.clone();
-                let post = post.clone();
-                Callback::from(move |_| on_click.emit(post.clone()))
-            };
-
-            html! {
-                <p onclick={on_post_select}> {
-                    format!("{}: {}", post.id, post.title)
-                }
-                </p>
-            }
-        })
-        .collect()
-}
-
-#[derive(Clone, Properties, PartialEq)]
-struct PostsDetailProps {
-    post: Post,
-}
-
-#[function_component(PostDetail)]
-fn post_detail(PostsDetailProps { post }: &PostsDetailProps) -> Html {
-    html! {
-        <div>
-            <h3>{post.title.clone()}</h3>
-            <h3>{post.body.clone()}</h3>
-        </div>
-    }
-}
 
 #[function_component(App)]
 fn app() -> Html {
