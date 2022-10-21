@@ -14,10 +14,13 @@ pub fn todos_list(TodosListProps { todos, on_click }: &TodosListProps) -> Html {
             };
 
             html! {
-                <p onclick={on_todo_select}> {
-                    format!("{}: {}", todo.id, todo.title)
-                }
-                </p>
+                <>
+                    <input type="checkbox" checked={todo.done} />
+                    <p onclick={on_todo_select}> {
+                        format!("{}: {}", todo.id, todo.title)
+                    }
+                    </p>
+                </>
             }
         })
         .collect()

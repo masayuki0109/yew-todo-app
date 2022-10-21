@@ -41,25 +41,32 @@ fn app() -> Html {
     });
 
     let on_add = {
+        let todos = todos.clone();
         Callback::from(move |title: String| {
             let data = NewTodo {
-                title: title.clone(),
+                title,
                 description: None,
             };
 
             let data_serialized = serde_json::to_string_pretty(&data).unwrap();
-            wasm_bindgen_futures::spawn_local(async move {
-                let post_request = Request::post("/todos")
-                    .header("Content-Type", "application/json")
-                    .body(wasm_bindgen::JsValue::from(&data_serialized))
-                    .send()
-                    .await
-                    .unwrap()
-                    .text()
-                    .await
-                    .unwrap();
-                log_1(&JsValue::from(post_request));
-            });
+            {
+                let todos = todos.clone();
+                wasm_bindgen_futures::spawn_local(async move {
+                    let post_request = Request::post("/todos")
+                        .header("Content-Type", "application/json")
+                        .body(wasm_bindgen::JsValue::from(&data_serialized))
+                        .send()
+                        .await
+                        .unwrap()
+                        .text()
+                        .await
+                        .unwrap();
+                    let deserialize_todo: Todo = serde_json::from_str(&post_request).unwrap();
+                    let mut new_todos = (*todos).clone();
+                    new_todos.push(deserialize_todo);
+                    todos.set(new_todos);
+                });
+            }
         })
     };
 
