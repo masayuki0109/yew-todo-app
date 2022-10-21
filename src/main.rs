@@ -2,22 +2,22 @@ mod components;
 mod types;
 mod http_client;
 
-use crate::components::{detail::PostDetail, list::PostsList};
+use crate::components::{detail::TodoDetail, list::TodosList};
 use crate::http_client::get;
-use types::{Post};
+use types::{Todo};
 use yew::prelude::*;
 
 #[function_component(App)]
 fn app() -> Html {
-    let posts = use_state(std::vec::Vec::new);
+    let todos = use_state(std::vec::Vec::new);
     {
-        let posts = posts.clone();
+        let todos = todos.clone();
         use_effect_with_deps(
             move |_| {
                 wasm_bindgen_futures::spawn_local(async move {
-                    let fetched_posts: Vec<Post> = get::posts().await; 
+                    let fetched_todos: Vec<Todo> = get::todos().await; 
 
-                    posts.set(fetched_posts);
+                    todos.set(fetched_todos);
                 });
                 || ()
             },
@@ -25,15 +25,15 @@ fn app() -> Html {
         );
     }
 
-    let selected_post = use_state(|| None);
-    let on_post_select = {
-        let selected_post = selected_post.clone();
-        Callback::from(move |post: Post| selected_post.set(Some(post)))
+    let selected_todo = use_state(|| None);
+    let on_todo_select = {
+        let selected_todo = selected_todo.clone();
+        Callback::from(move |todo: Todo| selected_todo.set(Some(todo)))
     };
 
-    let detail = selected_post.as_ref().map(|post| {
+    let detail = selected_todo.as_ref().map(|todo| {
         html! {
-            <PostDetail post={post.clone()} />
+            <TodoDetail todo={todo.clone()} />
         }
     });
     html! {
@@ -43,8 +43,8 @@ fn app() -> Html {
                 <input /><submit/>
             </form>
             <div>
-                <h3>{"posts list"}</h3>
-                <PostsList posts={(*posts).clone()} on_click={on_post_select.clone()} />
+                <h3>{"todos list"}</h3>
+                <TodosList todos={(*todos).clone()} on_click={on_todo_select.clone()} />
            </div>
            {for detail}
         </>

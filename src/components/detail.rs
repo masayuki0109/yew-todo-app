@@ -1,13 +1,14 @@
 use yew::{function_component, html};
 
-use crate::types::PostsDetailProps;
+use crate::types::TodosDetailProps;
 
-#[function_component(PostDetail)]
-pub fn post_detail(PostsDetailProps { post }: &PostsDetailProps) -> Html {
+#[function_component(TodoDetail)]
+pub fn todo_detail(TodosDetailProps { todo }: &TodosDetailProps) -> Html {
+
     html! {
         <div>
-            <h3>{post.title.clone()}</h3>
-            <h3>{post.body.clone()}</h3>
+            <h3>{todo.title.clone()}</h3>
+            <h3>{for todo.description.clone()}</h3>
         </div>
     }
 }

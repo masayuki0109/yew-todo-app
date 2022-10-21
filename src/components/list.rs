@@ -1,21 +1,21 @@
 use yew::{function_component, html, Callback};
 
-use crate::types::PostsListProps;
+use crate::types::TodosListProps;
 
-#[function_component(PostsList)]
-pub fn posts_list(PostsListProps { posts, on_click }: &PostsListProps) -> Html {
-    posts
+#[function_component(TodosList)]
+pub fn todos_list(TodosListProps { todos, on_click }: &TodosListProps) -> Html {
+    todos
         .iter()
-        .map(|post| {
-            let on_post_select = {
+        .map(|todo| {
+            let on_todo_select = {
                 let on_click = on_click.clone();
-                let post = post.clone();
-                Callback::from(move |_| on_click.emit(post.clone()))
+                let todo = todo.clone();
+                Callback::from(move |_| on_click.emit(todo.clone()))
             };
 
             html! {
-                <p onclick={on_post_select}> {
-                    format!("{}: {}", post.id, post.title)
+                <p onclick={on_todo_select}> {
+                    format!("{}: {}", todo.id, todo.title)
                 }
                 </p>
             }

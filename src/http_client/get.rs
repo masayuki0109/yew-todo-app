@@ -1,9 +1,9 @@
 use gloo_net::http::Request;
 
-use crate::types::Post;
+use crate::types::Todo;
 
-pub async fn posts() -> Vec<Post> {
-    Request::get("/posts")
+pub async fn todos() -> Vec<Todo> {
+    Request::get("/todos")
         .send()
         .await
         .unwrap()

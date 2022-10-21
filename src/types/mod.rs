@@ -2,20 +2,21 @@ use yew::prelude::*;
 use serde::Deserialize;
 
 #[derive(Deserialize, Clone, PartialEq)]
-pub struct Post {
+pub struct Todo {
     pub id: i32,
     pub title: String,
-    pub body: String,
-    pub published: bool,
+    pub description: Option<String>,
+    pub done: bool,
+    pub published: bool
 }
 
 #[derive(Properties, PartialEq)]
-pub struct PostsListProps {
-    pub posts: Vec<Post>,
-    pub on_click: Callback<Post>,
+pub struct TodosListProps {
+    pub todos: Vec<Todo>,
+    pub on_click: Callback<Todo>,
 }
 
 #[derive(Clone, Properties, PartialEq)]
-pub struct PostsDetailProps {
-    pub post: Post,
+pub struct TodosDetailProps {
+    pub todo: Todo,
 }
