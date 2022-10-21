@@ -4,7 +4,7 @@ use crate::components::todo::Todo;
 use crate::types::TodosListProps;
 
 #[function_component(TodosList)]
-pub fn todos_list(TodosListProps { todos, on_click }: &TodosListProps) -> Html {
+pub fn todos_list(TodosListProps { todos, on_click, on_change_value }: &TodosListProps) -> Html {
     todos
         .iter()
         .map(|todo| {
@@ -15,7 +15,7 @@ pub fn todos_list(TodosListProps { todos, on_click }: &TodosListProps) -> Html {
             };
 
             html! {
-                <Todo todo={(*todo).clone()} on_click={onclick} />
+                <Todo todo={(*todo).clone()} on_click={onclick} {on_change_value} />
             }
         })
         .collect()

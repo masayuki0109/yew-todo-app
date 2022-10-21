@@ -23,13 +23,21 @@ pub struct NewTodo {
 pub struct TodosListProps {
     pub todos: Vec<Todo>,
     pub on_click: Callback<Todo>,
+    pub on_change_value: Callback<Todo>
 }
 
 #[derive(Properties, PartialEq)]
 pub struct TodoProps {
     pub todo: Todo,
     pub on_click: Callback<Todo>,
+    pub on_change_value: Callback<Todo>
 }
+
+#[derive(Deserialize,Serialize)]
+pub struct TodoDoneRequest {
+    pub done: bool,
+}
+
 
 #[derive(Clone, Properties, PartialEq)]
 pub struct TodosDetailProps {

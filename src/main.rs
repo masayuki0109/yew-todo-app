@@ -5,7 +5,7 @@ mod types;
 use crate::components::{detail::TodoDetail, form::InputFrom, list::TodosList};
 use crate::http_client::{delete, get, post};
 use gloo_net::http::Request;
-use types::{NewTodo, Todo};
+use types::{NewTodo, Todo, TodoDoneRequest};
 use wasm_bindgen::JsValue;
 use web_sys::console::log_1;
 use yew::prelude::*;
@@ -35,7 +35,8 @@ fn app() -> Html {
             wasm_bindgen_futures::spawn_local(async move {
                 delete::todo(todo.id).await;
 
-                let new_todos = (*todos).clone()
+                let new_todos = (*todos)
+                    .clone()
                     .into_iter()
                     .filter(|t| t.id != todo.id)
                     .collect::<Vec<Todo>>();
@@ -66,17 +67,35 @@ fn app() -> Html {
         })
     };
 
+    let on_change_value = {
+        Callback::from(move |todo: Todo| {
+            log_1(&JsValue::from(todo.done));
+            let done_serialized =
+                serde_json::to_string_pretty(&TodoDoneRequest { done: todo.done }).unwrap();
+            wasm_bindgen_futures::spawn_local(async move {
+                Request::put(&format!("todos/{}", todo.id))
+                    .header("Content-Type", "application/json")
+                    .body(wasm_bindgen::JsValue::from(done_serialized))
+                    .send()
+                    .await
+                    .unwrap()
+                    .text()
+                    .await
+                    .unwrap();
+            });
+        })
+    };
+
     html! {
         <>
-            <h1>{"My blog"}</h1>
+            <h1>{"Todo App"}</h1>
             <form>
             <InputFrom {on_add} />
             </form>
             <div>
                 <h3>{"todos list"}</h3>
-                <TodosList todos={(*todos).clone()} on_click={on_click.clone()} />
+                <TodosList todos={(*todos).clone()} on_click={on_click.clone()} on_change_value={on_change_value.clone()} />
            </div>
-        //    {for detail}
         </>
     }
 }
