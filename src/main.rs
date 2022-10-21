@@ -1,8 +1,9 @@
 mod components;
 mod types;
+mod http_client;
 
 use crate::components::{detail::PostDetail, list::PostsList};
-use gloo_net::http::Request;
+use crate::http_client::get;
 use types::{Post};
 use yew::prelude::*;
 
@@ -14,13 +15,7 @@ fn app() -> Html {
         use_effect_with_deps(
             move |_| {
                 wasm_bindgen_futures::spawn_local(async move {
-                    let fetched_posts: Vec<Post> = Request::get("/posts")
-                        .send()
-                        .await
-                        .unwrap()
-                        .json()
-                        .await
-                        .unwrap();
+                    let fetched_posts: Vec<Post> = get::posts().await; 
 
                     posts.set(fetched_posts);
                 });
