@@ -25,6 +25,12 @@ pub struct TodosListProps {
     pub on_click: Callback<Todo>,
 }
 
+#[derive(Properties, PartialEq)]
+pub struct TodoProps {
+    pub todo: Todo,
+    pub on_click: Callback<Todo>,
+}
+
 #[derive(Clone, Properties, PartialEq)]
 pub struct TodosDetailProps {
     pub todo: Todo,

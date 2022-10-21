@@ -1,4 +1,5 @@
 use yew::{function_component, html, Callback};
+use crate::components::todo::Todo;
 
 use crate::types::TodosListProps;
 
@@ -7,20 +8,14 @@ pub fn todos_list(TodosListProps { todos, on_click }: &TodosListProps) -> Html {
     todos
         .iter()
         .map(|todo| {
-            let on_todo_select = {
+            let onclick = {
                 let on_click = on_click.clone();
                 let todo = todo.clone();
                 Callback::from(move |_| on_click.emit(todo.clone()))
             };
 
             html! {
-                <>
-                    <input type="checkbox" checked={todo.done} />
-                    <p onclick={on_todo_select}> {
-                        format!("{}: {}", todo.id, todo.title)
-                    }
-                    </p>
-                </>
+                <Todo todo={(*todo).clone()} on_click={onclick} />
             }
         })
         .collect()

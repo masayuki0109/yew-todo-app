@@ -28,17 +28,19 @@ fn app() -> Html {
         );
     }
 
-    let selected_todo = use_state(|| None);
-    let on_todo_select = {
-        let selected_todo = selected_todo.clone();
-        Callback::from(move |todo: Todo| selected_todo.set(Some(todo)))
+    let on_click = {
+        Callback::from(move |todo: Todo| {
+            wasm_bindgen_futures::spawn_local(async move {
+                Request::delete(&format!("/todos/{}", todo.id))
+                    .send()
+                    .await
+                    .unwrap()
+                    .text()
+                    .await
+                    .unwrap();
+            })
+        })
     };
-
-    let detail = selected_todo.as_ref().map(|todo| {
-        html! {
-            <TodoDetail todo={todo.clone()} />
-        }
-    });
 
     let on_add = {
         let todos = todos.clone();
@@ -70,9 +72,9 @@ fn app() -> Html {
             </form>
             <div>
                 <h3>{"todos list"}</h3>
-                <TodosList todos={(*todos).clone()} on_click={on_todo_select.clone()} />
+                <TodosList todos={(*todos).clone()} on_click={on_click.clone()} />
            </div>
-           {for detail}
+        //    {for detail}
         </>
     }
 }
