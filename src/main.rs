@@ -3,7 +3,7 @@ mod http_client;
 mod types;
 
 use crate::components::{detail::TodoDetail, form::InputFrom, list::TodosList};
-use crate::http_client::get;
+use crate::http_client::{get, post};
 use gloo_net::http::Request;
 use types::{NewTodo, Todo};
 use wasm_bindgen::JsValue;
@@ -43,25 +43,17 @@ fn app() -> Html {
     let on_add = {
         let todos = todos.clone();
         Callback::from(move |title: String| {
-            let data = NewTodo {
+            let input_todo = NewTodo {
                 title,
                 description: None,
             };
 
-            let data_serialized = serde_json::to_string_pretty(&data).unwrap();
+            let todo_serialized = serde_json::to_string_pretty(&input_todo).unwrap();
             {
                 let todos = todos.clone();
                 wasm_bindgen_futures::spawn_local(async move {
-                    let post_request = Request::post("/todos")
-                        .header("Content-Type", "application/json")
-                        .body(wasm_bindgen::JsValue::from(&data_serialized))
-                        .send()
-                        .await
-                        .unwrap()
-                        .text()
-                        .await
-                        .unwrap();
-                    let deserialize_todo: Todo = serde_json::from_str(&post_request).unwrap();
+                    let result = post::todos(&todo_serialized).await;
+                    let deserialize_todo: Todo = serde_json::from_str(&result).unwrap();
                     let mut new_todos = (*todos).clone();
                     new_todos.push(deserialize_todo);
                     todos.set(new_todos);
