@@ -4,7 +4,8 @@ mod types;
 
 use crate::components::{detail::TodoDetail, form::InputFrom, list::TodosList};
 use crate::http_client::get;
-use types::{Todo};
+use gloo_net::http::Request;
+use types::{NewTodo, Todo};
 use wasm_bindgen::JsValue;
 use web_sys::console::log_1;
 use yew::prelude::*;
@@ -39,7 +40,28 @@ fn app() -> Html {
         }
     });
 
-    let on_add = { Callback::from(move |title: String| log_1(&JsValue::from(&title.to_string()))) };
+    let on_add = {
+        Callback::from(move |title: String| {
+            let data = NewTodo {
+                title: title.clone(),
+                description: None,
+            };
+
+            let data_serialized = serde_json::to_string_pretty(&data).unwrap();
+            wasm_bindgen_futures::spawn_local(async move {
+                let post_request = Request::post("/todos")
+                    .header("Content-Type", "application/json")
+                    .body(wasm_bindgen::JsValue::from(&data_serialized))
+                    .send()
+                    .await
+                    .unwrap()
+                    .text()
+                    .await
+                    .unwrap();
+                log_1(&JsValue::from(post_request));
+            });
+        })
+    };
 
     html! {
         <>
