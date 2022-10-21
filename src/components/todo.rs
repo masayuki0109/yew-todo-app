@@ -1,4 +1,6 @@
-use yew::{function_component, html, Callback};
+use wasm_bindgen::JsValue;
+use web_sys::{console::log_1, InputEvent, HtmlInputElement};
+use yew::{function_component, html, Callback, TargetCast};
 
 use crate::types::TodoProps;
 
@@ -9,14 +11,20 @@ pub fn todos(TodoProps { todo, on_click }: &TodoProps) -> Html {
         let todo = todo.clone();
         Callback::from(move |_| on_click.emit(todo.clone()))
     };
+
+    let oninput = {
+        Callback::from(move |e: InputEvent| {
+          log_1(&JsValue::from(e.target_unchecked_into::<HtmlInputElement>().checked()))
+        })
+    };
+
     html! {
-        <>
-            <input type="checkbox" checked={todo.done} />
-            <p> {
+        <li>
+            <input type="checkbox" checked={todo.done} oninput={oninput} />
+            {
                 format!("{}: {}", todo.id, todo.title)
             }
-            </p>
             <button {onclick}>{"削除"}</button>
-        </>
+        </li>
     }
 }
