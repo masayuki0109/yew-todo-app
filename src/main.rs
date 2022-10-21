@@ -2,18 +2,12 @@ mod components;
 mod http_client;
 mod types;
 
-use crate::components::{detail::TodoDetail, list::TodosList};
+use crate::components::{detail::TodoDetail, form::InputFrom, list::TodosList};
 use crate::http_client::get;
-use types::Todo;
+use types::{Todo};
 use wasm_bindgen::JsValue;
 use web_sys::console::log_1;
 use yew::prelude::*;
-
-
-enum Message {
-    Inputted(String),
-    Run,
-}
 
 #[function_component(App)]
 fn app() -> Html {
@@ -44,11 +38,14 @@ fn app() -> Html {
             <TodoDetail todo={todo.clone()} />
         }
     });
+
+    let on_add = { Callback::from(move |title: String| log_1(&JsValue::from(&title.to_string()))) };
+
     html! {
         <>
             <h1>{"My blog"}</h1>
             <form>
-                <input /><submit/>
+            <InputFrom {on_add} />
             </form>
             <div>
                 <h3>{"todos list"}</h3>

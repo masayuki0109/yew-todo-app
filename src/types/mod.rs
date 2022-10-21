@@ -1,5 +1,6 @@
+
 use yew::prelude::*;
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 
 #[derive(Deserialize, Clone, PartialEq)]
 pub struct Todo {
@@ -9,6 +10,14 @@ pub struct Todo {
     pub done: bool,
     pub published: bool
 }
+
+#[derive(Deserialize, Serialize)]
+pub struct NewTodo {
+    pub title: String,
+    pub description: Option<String>,
+}
+
+
 
 #[derive(Properties, PartialEq)]
 pub struct TodosListProps {
