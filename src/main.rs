@@ -3,7 +3,7 @@ mod http_client;
 mod types;
 
 use crate::components::{detail::TodoDetail, form::InputFrom, list::TodosList};
-use crate::http_client::{delete, get, post};
+use crate::http_client::{delete, get, post, put};
 use gloo_net::http::Request;
 use types::{NewTodo, Todo, TodoDoneRequest};
 use wasm_bindgen::JsValue;
@@ -69,19 +69,10 @@ fn app() -> Html {
 
     let on_change_value = {
         Callback::from(move |todo: Todo| {
-            log_1(&JsValue::from(todo.done));
             let done_serialized =
                 serde_json::to_string_pretty(&TodoDoneRequest { done: todo.done }).unwrap();
             wasm_bindgen_futures::spawn_local(async move {
-                Request::put(&format!("todos/{}", todo.id))
-                    .header("Content-Type", "application/json")
-                    .body(wasm_bindgen::JsValue::from(done_serialized))
-                    .send()
-                    .await
-                    .unwrap()
-                    .text()
-                    .await
-                    .unwrap();
+                put::done_todo(&done_serialized, todo.id).await;
             });
         })
     };
