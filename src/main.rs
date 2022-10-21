@@ -1,11 +1,19 @@
 mod components;
-mod types;
 mod http_client;
+mod types;
 
 use crate::components::{detail::TodoDetail, list::TodosList};
 use crate::http_client::get;
-use types::{Todo};
+use types::Todo;
+use wasm_bindgen::JsValue;
+use web_sys::console::log_1;
 use yew::prelude::*;
+
+
+enum Message {
+    Inputted(String),
+    Run,
+}
 
 #[function_component(App)]
 fn app() -> Html {
@@ -15,7 +23,7 @@ fn app() -> Html {
         use_effect_with_deps(
             move |_| {
                 wasm_bindgen_futures::spawn_local(async move {
-                    let fetched_todos: Vec<Todo> = get::todos().await; 
+                    let fetched_todos: Vec<Todo> = get::todos().await;
 
                     todos.set(fetched_todos);
                 });
