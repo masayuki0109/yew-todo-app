@@ -78,9 +78,9 @@ fn app() -> Html {
         <>
             <Header />
             <main class="container-fluid mt-2 container">
-            <InputFrom {on_add} />
-            <List todos={(*todos).clone()} on_click={on_click.clone()} on_change_value={on_change_value.clone()} />
-           </main>
+                <InputFrom {on_add} />
+                <List todos={(*todos).clone()} on_click={on_click.clone()} on_change_value={on_change_value.clone()} />
+            </main>
         </>
     }
 }
